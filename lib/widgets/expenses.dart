@@ -27,10 +27,25 @@ class _ExpensesState extends State<Expenses> {
     ),
   ];
 
+  void _openaddexpenseoverlay(){
+    showModalBottomSheet(
+      context: context, 
+      builder: (ctx) => const Text("testing modal bottom sheet"),);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("EXPENSE TRACKER"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed:  _openaddexpenseoverlay,
+            icon: const Icon(Icons.add)
+            ),
+        ],
+      ),
       body: Column(
         children: [
           const Text('chart'),
