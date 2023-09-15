@@ -27,6 +27,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _openaddexpenseoverlay() {
     showModalBottomSheet(
+        isScrollControlled: true,
         context: context, builder: (ctx) => NewExpense(OnAddExpense: _addExpense,));
   }
 
