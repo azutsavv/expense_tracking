@@ -14,24 +14,26 @@ class Expenses extends StatefulWidget {
 class _ExpensesState extends State<Expenses> {
   final List<Expense> _registeredExpense = [
     Expense(
-      amount: 19.9, 
-      title: 'flutter', 
-      date: DateTime.now(), 
-      category: Category.work
-    ),
-
+        amount: 19.9,
+        title: 'flutter',
+        date: DateTime.now(),
+        category: Category.work),
     Expense(
-      amount: 15.69, 
-      title: 'cinema', 
-      date: DateTime.now(), 
-      category: Category.leisure
-    ),
+        amount: 15.69,
+        title: 'cinema',
+        date: DateTime.now(),
+        category: Category.leisure),
   ];
 
-  void _openaddexpenseoverlay(){
+  void _openaddexpenseoverlay() {
     showModalBottomSheet(
-      context: context, 
-      builder: (ctx) => const NewExpense());
+        context: context, builder: (ctx) => NewExpense(OnAddExpense: _addExpense,));
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      _registeredExpense.add(expense);
+    });
   }
 
   @override
@@ -42,9 +44,7 @@ class _ExpensesState extends State<Expenses> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed:  _openaddexpenseoverlay,
-            icon: const Icon(Icons.add)
-            ),
+              onPressed: _openaddexpenseoverlay, icon: const Icon(Icons.add)),
         ],
       ),
       body: Column(
