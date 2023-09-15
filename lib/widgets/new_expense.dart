@@ -29,6 +29,30 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  void _submitExpenseData() {
+    final enteredAmount = double.tryParse(_expenseController.text);
+    final amountisValid = enteredAmount == null || enteredAmount <= 0;
+
+    if (_titlecontroller.text.trim().isEmpty ||
+        amountisValid ||
+        _selectedDate == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+            title: Text("Invaild Input"),
+            content: Text("please make sure input values are valid"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text("Okay"),
+              ),
+            ]),
+      );
+
+      return;
+    }
+  }
+
   @override
   void dispose() {
     _titlecontroller.dispose();
@@ -89,8 +113,8 @@ class _NewExpenseState extends State<NewExpense> {
                   value: _selectedCategory,
                   items: Category.values
                       .map((category) => DropdownMenuItem(
-                              value: category,
-                              child: Text(
+                          value: category,
+                          child: Text(
                             category.name.toUpperCase(),
                           )))
                       .toList(),
@@ -108,10 +132,7 @@ class _NewExpenseState extends State<NewExpense> {
                   },
                   child: const Text("Cancel")),
               ElevatedButton(
-                  onPressed: () {
-                    print(_titlecontroller.text);
-                  },
-                  child: const Text("SAVE")),
+                  onPressed: _submitExpenseData, child: const Text("SAVE")),
             ],
           )
         ],
