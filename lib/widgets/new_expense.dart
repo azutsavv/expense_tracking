@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+final formatter = DateFormat.yMd();
 
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key});
@@ -7,34 +10,88 @@ class NewExpense extends StatefulWidget {
   State<NewExpense> createState() => _NewExpenseState();
 }
 
-var _enteredTitle = '';
-
-void _savetitleinnput(String inputValue) {
-  _enteredTitle = inputValue;
-}
-
 class _NewExpenseState extends State<NewExpense> {
+  final _titlecontroller = TextEditingController();
+  final _expenseController = TextEditingController();
+  DateTime? _selectedDate;
+
+  void _presentDay() async {
+    final now = DateTime.now();
+    final firstDay = DateTime(now.year - 1, now.month, now.day);
+    
+
+    final _pickedDate = await showDatePicker(
+        context: context, initialDate: now, firstDate: firstDay, lastDate: now);
+
+    setState(() {
+      _selectedDate = _pickedDate;
+    });
+  }
+
+  @override
+  void dispose() {
+    _titlecontroller.dispose();
+    _expenseController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:const  EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const TextField(
+          TextField(
+            controller: _titlecontroller,
             maxLength: 50,
             keyboardType: TextInputType.name,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               label: Text("title"),
             ),
-            onChanged: _savetitleinnput,
+          ),
+          const SizedBox(
+            height: 5,
           ),
           Row(
             children: [
+              Expanded(
+                child: TextField(
+                  controller: _expenseController,
+                  maxLength: 6,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    prefixText: "\$ ",
+                    label: Text("Total Amount"),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(_selectedDate == null ? "NO date selected" : formatter.format(_selectedDate!)),
+                    IconButton(
+                        onPressed: _presentDay,
+                        icon: const Icon(Icons.calendar_month))
+                  ],
+                ),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               ElevatedButton(
                   onPressed: () {
-                    print(_enteredTitle);
+                    Navigator.pop(context);
                   },
-                  child:const Text("SAVE")),
+                  child: const Text("Cancel")),
+              ElevatedButton(
+                  onPressed: () {
+                    print(_titlecontroller.text);
+                  },
+                  child: const Text("SAVE")),
             ],
           )
         ],
