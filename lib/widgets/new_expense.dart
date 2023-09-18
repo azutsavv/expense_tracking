@@ -76,7 +76,7 @@ class _NewExpenseState extends State<NewExpense> {
   Widget build(BuildContext context) {
     final keyboradSpace = MediaQuery.of(context).viewInsets.bottom;
     return LayoutBuilder(builder: (ctx, constraints) {
-      
+      final width = constraints.maxWidth;
       return SizedBox(
         height: double.infinity,
         child: SingleChildScrollView(
@@ -84,6 +84,35 @@ class _NewExpenseState extends State<NewExpense> {
             padding: EdgeInsets.fromLTRB(16, 16, 16, keyboradSpace + 16),
             child: Column(
               children: [
+                if(width >= 600)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _titlecontroller,
+                          maxLength: 50,
+                          keyboardType: TextInputType.name,
+                          decoration: const InputDecoration(
+                            label: Text("title"),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(width: 20,),
+                    Expanded(
+                      child: TextField(
+                        controller: _expenseController,
+                        maxLength: 6,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          prefixText: "\$ ",
+                          label: Text("Total Amount"),
+                        ),
+                      ),
+                    ),
+
+                    ],
+                  )
+              else 
                 TextField(
                   controller: _titlecontroller,
                   maxLength: 50,
@@ -95,6 +124,48 @@ class _NewExpenseState extends State<NewExpense> {
                 const SizedBox(
                   height: 5,
                 ),
+
+              if(width >= 600)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    DropdownButton(
+                        value: _selectedCategory,
+                        items: Category.values
+                            .map((category) => DropdownMenuItem(
+                                value: category,
+                                child: Text(
+                                  category.name.toUpperCase(),
+                                )))
+                            .toList(),
+                        onChanged: (value) {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                        }),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(_selectedDate == null
+                              ? "NO date selected"
+                              : formatter.format(_selectedDate!)
+                      ),
+                      IconButton(
+                              onPressed: _presentDay,
+                              icon: const Icon(Icons.calendar_month)
+                      )
+                        ],
+                      ),
+                  ],   
+                  
+                )
+
+              else
                 Row(
                   children: [
                     Expanded(
@@ -124,6 +195,22 @@ class _NewExpenseState extends State<NewExpense> {
                     )
                   ],
                 ),
+                
+              if(width >=600)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Cancel")),
+                    ElevatedButton(
+                        onPressed: _submitExpenseData,
+                        child: const Text("SAVE")),
+                  ],
+                ) 
+              else   
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
